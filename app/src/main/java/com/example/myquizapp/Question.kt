@@ -10,7 +10,4 @@ data class Question(
     val optionFour:String,
     val correctAnswer:Int
 
-
-
-
 )

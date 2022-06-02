@@ -13,12 +13,13 @@ import org.w3c.dom.Text
 
 class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
 
-    private var mCurrentPosition: Int = 1
-    private var mQuestionsList:ArrayList<Question>?= null
+    private var mCurrentPosition: Int = 1   //Default and first question position
+    private var mQuestionsList:ArrayList<Question>?= null       //Array list that will have questions from constants file
     private var mSelectedOptionPosition : Int = 0
     private var mUserName : String? = null
     private var mCorrectAnswer : Int = 0
 
+    //Create variables for each view in layout
     private var progressBar: ProgressBar? = null
     private var tvProgress: TextView? = null
     private var tvQuestion: TextView? = null
@@ -36,8 +37,9 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_quiz_questions)
 
-        mUserName = intent.getStringExtra(Constants.USER_NAME)
+        mUserName = intent.getStringExtra(Constants.USER_NAME)  //Get the name from intent and assign it into a variable
 
+        //Connecting the view to its ids
         progressBar = findViewById(R.id.progressBar)
         tvProgress = findViewById(R.id.tv_progress)
         tvQuestion = findViewById(R.id.tv_question)
@@ -50,15 +52,18 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
 
         btnSubmit = findViewById(R.id.btnSubmit)
 
+        mQuestionsList = Constants.getQuestions()
+
+        setQuestion()
+
         tvOptionOne?.setOnClickListener(this)
         tvOptionTwo?.setOnClickListener(this)
         tvOptionThree?.setOnClickListener(this)
         tvOptionFour?.setOnClickListener(this)
         btnSubmit?.setOnClickListener(this)
 
-        mQuestionsList = Constants.getQuestions()
 
-        setQuestion()
+
     }
 
     private fun setQuestion() {
@@ -106,20 +111,6 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    private fun selectedOptionView(tv:TextView, selectedOptionNum: Int){
-        defaultOptionsView()
-
-        mSelectedOptionPosition = selectedOptionNum
-
-        tv.setTextColor(Color.parseColor("#363A43"))
-        tv.setTypeface(tv.typeface, Typeface.BOLD)
-
-        tv.background = ContextCompat.getDrawable(
-            this,
-            R.drawable.selected_option_border_bg
-        )
-    }
-
     override fun onClick(view: View?) {
         when(view?.id){
             R.id.tv_option_one -> {
@@ -165,6 +156,8 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
                     }
                 }else{
                     val question = mQuestionsList?.get(mCurrentPosition - 1)
+
+                    //This is to check if answer is wrong
                     if(question!!.correctAnswer != mSelectedOptionPosition){
                         answerView(mSelectedOptionPosition, R.drawable.wrong_option_border_bg)
                     }else{
@@ -185,6 +178,24 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+
+    //Function to set the view of selected option
+    private fun selectedOptionView(tv:TextView, selectedOptionNum: Int){
+        defaultOptionsView()
+
+        mSelectedOptionPosition = selectedOptionNum
+
+        tv.setTextColor(Color.parseColor("#363A43"))
+        tv.setTypeface(tv.typeface, Typeface.BOLD)
+
+        tv.background = ContextCompat.getDrawable(
+            this,
+            R.drawable.selected_option_border_bg
+        )
+    }
+
+
+    //A function for answer view which is used to highlight the answer is wrong or right
     private fun answerView(answer: Int, drawableView: Int){
         when(answer){
             1 -> {
